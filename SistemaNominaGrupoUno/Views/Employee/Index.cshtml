@@ -1,0 +1,21 @@
+﻿@model List<SistemaNominaGrupoUno.Context.Employees>
+
+<div class="text-center">
+    <table>
+        <thead>
+            <tr>
+                <th>FirstName</th>
+                <th>LastName</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var employee in Model)
+            {
+                <tr>
+                    <td>@employee.FirstName</td>
+                    <td>@employee.LastName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
