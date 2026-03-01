@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="SistemaNominaGrupoUno/SistemaNominaGrupoUno.csproj" />
+  <Project Path="SistemaNominaGrupoUno.Tests/SistemaNominaGrupoUno.Tests.csproj" />
 </Solution>

@@ -12,6 +12,7 @@ namespace SistemaNominaGrupoUno.Context
         public char Gender { get; set; }
         public string HireDate { get; set; }
         public string Correo { get; set; }
+        public bool IsActive { get; set; } = true;
 
         public ICollection<Salaries> Salaries { get; set; }
         public ICollection<Titles> Titles { get; set; }

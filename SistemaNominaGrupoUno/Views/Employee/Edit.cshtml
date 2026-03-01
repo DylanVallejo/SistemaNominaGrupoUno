@@ -1,0 +1,101 @@
+@model EmployeeViewModel
+
+@{
+    ViewData["Title"] = "Editar Empleado";
+}
+
+<div class="d-flex align-items-center mb-3 gap-2">
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i>
+    </a>
+    <h2 class="mb-0"><i class="bi bi-pencil-square me-2 text-warning"></i>Editar Empleado</h2>
+    <span class="badge bg-secondary ms-1">N° @Model.EmpNo</span>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0"><i class="bi bi-person-lines-fill me-2"></i>Datos Personales</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Edit" asp-route-id="@Model.EmpNo" method="post" novalidate>
+                    @Html.AntiForgeryToken()
+                    <input asp-for="EmpNo" type="hidden" />
+
+                    <div class="row g-3">
+                        @* Cédula *@
+                        <div class="col-md-6">
+                            <label asp-for="Ci" class="form-label fw-semibold"></label>
+                            <input asp-for="Ci" class="form-control" />
+                            <span asp-validation-for="Ci" class="text-danger small"></span>
+                        </div>
+
+                        @* Correo *@
+                        <div class="col-md-6">
+                            <label asp-for="Correo" class="form-label fw-semibold"></label>
+                            <input asp-for="Correo" type="email" class="form-control" />
+                            <span asp-validation-for="Correo" class="text-danger small"></span>
+                        </div>
+
+                        @* Nombre *@
+                        <div class="col-md-6">
+                            <label asp-for="FirstName" class="form-label fw-semibold"></label>
+                            <input asp-for="FirstName" class="form-control" />
+                            <span asp-validation-for="FirstName" class="text-danger small"></span>
+                        </div>
+
+                        @* Apellido *@
+                        <div class="col-md-6">
+                            <label asp-for="LastName" class="form-label fw-semibold"></label>
+                            <input asp-for="LastName" class="form-control" />
+                            <span asp-validation-for="LastName" class="text-danger small"></span>
+                        </div>
+
+                        @* Género *@
+                        <div class="col-md-4">
+                            <label asp-for="Gender" class="form-label fw-semibold"></label>
+                            <select asp-for="Gender" class="form-select">
+                                <option value="M" selected="@(Model.Gender == 'M')">Masculino</option>
+                                <option value="F" selected="@(Model.Gender == 'F')">Femenino</option>
+                            </select>
+                            <span asp-validation-for="Gender" class="text-danger small"></span>
+                        </div>
+
+                        @* Fecha de Nacimiento *@
+                        <div class="col-md-4">
+                            <label asp-for="BirthDate" class="form-label fw-semibold"></label>
+                            <input asp-for="BirthDate" type="date" class="form-control" />
+                            <span asp-validation-for="BirthDate" class="text-danger small"></span>
+                        </div>
+
+                        @* Fecha de Contratación *@
+                        <div class="col-md-4">
+                            <label asp-for="HireDate" class="form-label fw-semibold"></label>
+                            <input asp-for="HireDate" type="date" class="form-control" />
+                            <span asp-validation-for="HireDate" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <hr class="mt-4" />
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a asp-action="Details" asp-route-id="@Model.EmpNo" class="btn btn-outline-info">
+                            <i class="bi bi-eye me-1"></i> Ver Detalle
+                        </a>
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle me-1"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-warning">
+                            <i class="bi bi-floppy me-1"></i> Guardar Cambios
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
