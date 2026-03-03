@@ -1,8 +1,281 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@model SistemaNominaGrupoUno.Context.DTOS.DashboardViewModel
+
+@*
+    Dashboard principal — Sección 7 PDF (Pantalla requerida)
+    RF-02: Resumen de empleados activos / inactivos
+    RF-03: Resumen de departamentos activos / inactivos
+    RF-07: Total de salarios vigentes
+    Sección 7 PDF: "alertas de vigencias por vencer" y "accesos rápidos a módulos"
+*@
+
+@{
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-0"><i class="bi bi-speedometer2 me-2 text-primary"></i>Dashboard</h2>
+        <small class="text-muted">Resumen del sistema — @DateTime.Today.ToString("dd/MM/yyyy")</small>
+    </div>
 </div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     TARJETAS DE MÉTRICAS PRINCIPALES
+     RF-02, RF-03, RF-07 / Sección 7 PDF
+     ═══════════════════════════════════════════════════════════ -->
+<div class="row g-3 mb-4">
+
+    <!-- Empleados Activos — RF-02 -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <a asp-controller="Employee" asp-action="Index" asp-route-status="activo"
+           class="text-decoration-none">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-success bg-opacity-10 p-3">
+                        <i class="bi bi-people-fill fs-3 text-success"></i>
+                    </div>
+                    <div>
+                        <div class="fs-2 fw-bold text-success">@Model.TotalEmpleadosActivos</div>
+                        <div class="text-muted small">Empleados activos</div>
+                        <div class="text-muted small">@Model.TotalEmpleadosInactivos inactivos</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Departamentos Activos — RF-03 -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <a asp-controller="Department" asp-action="Index" asp-route-status="activo"
+           class="text-decoration-none">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-primary bg-opacity-10 p-3">
+                        <i class="bi bi-building-fill fs-3 text-primary"></i>
+                    </div>
+                    <div>
+                        <div class="fs-2 fw-bold text-primary">@Model.TotalDeptosActivos</div>
+                        <div class="text-muted small">Departamentos activos</div>
+                        <div class="text-muted small">@Model.TotalDeptosInactivos inactivos</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Salarios Vigentes — RF-07 -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <a asp-controller="Salary" asp-action="Index" asp-route-status="activo"
+           class="text-decoration-none">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-warning bg-opacity-10 p-3">
+                        <i class="bi bi-cash-coin fs-3 text-warning"></i>
+                    </div>
+                    <div>
+                        <div class="fs-2 fw-bold text-warning">@Model.TotalSalariosVigentes</div>
+                        <div class="text-muted small">Salarios vigentes</div>
+                        <div class="text-muted small">hoy</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Alertas de Vigencia — Sección 7 PDF -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100 @(Model.AlertasVigencias.Any() ? "border-danger" : "")">
+            <div class="card-body d-flex align-items-center gap-3">
+                <div class="rounded-circle bg-danger bg-opacity-10 p-3">
+                    <i class="bi bi-exclamation-triangle-fill fs-3 text-danger"></i>
+                </div>
+                <div>
+                    <div class="fs-2 fw-bold text-danger">@Model.AlertasVigencias.Count</div>
+                    <div class="text-muted small">Alertas próximos 30 días</div>
+                    <div class="text-muted small">vigencias por vencer</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     ACCESOS RÁPIDOS A MÓDULOS
+     Sección 7 PDF: "Accesos rápidos a módulos"
+     ═══════════════════════════════════════════════════════════ -->
+<div class="row g-3 mb-4">
+    <div class="col-12">
+        <h5 class="text-muted mb-3"><i class="bi bi-grid-fill me-1"></i>Acceso rápido a módulos</h5>
+    </div>
+
+    <!-- Empleados — RF-02 -->
+    <div class="col-6 col-md-4 col-lg-2">
+        <a asp-controller="Employee" asp-action="Index"
+           class="text-decoration-none">
+            <div class="card border-0 shadow-sm text-center py-3 h-100 card-hover">
+                <div class="card-body p-2">
+                    <i class="bi bi-people-fill fs-2 text-success mb-2 d-block"></i>
+                    <div class="small fw-semibold text-dark">Empleados</div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Departamentos — RF-03 -->
+    <div class="col-6 col-md-4 col-lg-2">
+        <a asp-controller="Department" asp-action="Index"
+           class="text-decoration-none">
+            <div class="card border-0 shadow-sm text-center py-3 h-100 card-hover">
+                <div class="card-body p-2">
+                    <i class="bi bi-building-fill fs-2 text-primary mb-2 d-block"></i>
+                    <div class="small fw-semibold text-dark">Departamentos</div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Asignaciones — RF-04 -->
+    <div class="col-6 col-md-4 col-lg-2">
+        <a asp-controller="DeptEmp" asp-action="Index"
+           class="text-decoration-none">
+            <div class="card border-0 shadow-sm text-center py-3 h-100 card-hover">
+                <div class="card-body p-2">
+                    <i class="bi bi-diagram-3-fill fs-2 text-info mb-2 d-block"></i>
+                    <div class="small fw-semibold text-dark">Asignaciones</div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Gerentes — RF-05 -->
+    <div class="col-6 col-md-4 col-lg-2">
+        <a asp-controller="DeptManager" asp-action="Index"
+           class="text-decoration-none">
+            <div class="card border-0 shadow-sm text-center py-3 h-100 card-hover">
+                <div class="card-body p-2">
+                    <i class="bi bi-person-badge-fill fs-2 text-secondary mb-2 d-block"></i>
+                    <div class="small fw-semibold text-dark">Gerentes</div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Títulos — RF-06 -->
+    <div class="col-6 col-md-4 col-lg-2">
+        <a asp-controller="Title" asp-action="Index"
+           class="text-decoration-none">
+            <div class="card border-0 shadow-sm text-center py-3 h-100 card-hover">
+                <div class="card-body p-2">
+                    <i class="bi bi-award-fill fs-2 text-warning mb-2 d-block"></i>
+                    <div class="small fw-semibold text-dark">Títulos</div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Salarios — RF-07/08 -->
+    <div class="col-6 col-md-4 col-lg-2">
+        <a asp-controller="Salary" asp-action="Index"
+           class="text-decoration-none">
+            <div class="card border-0 shadow-sm text-center py-3 h-100 card-hover">
+                <div class="card-body p-2">
+                    <i class="bi bi-cash-coin fs-2 text-success mb-2 d-block"></i>
+                    <div class="small fw-semibold text-dark">Salarios</div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Reportes — RF-09 -->
+    <div class="col-6 col-md-4 col-lg-2">
+        <a asp-controller="Report" asp-action="Index"
+           class="text-decoration-none">
+            <div class="card border-0 shadow-sm text-center py-3 h-100 card-hover">
+                <div class="card-body p-2">
+                    <i class="bi bi-bar-chart-fill fs-2 text-danger mb-2 d-block"></i>
+                    <div class="small fw-semibold text-dark">Reportes</div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Administración — RF-12 (solo Administrador) -->
+    @if (User.IsInRole("Administrador"))
+    {
+        <div class="col-6 col-md-4 col-lg-2">
+            <a asp-controller="Admin" asp-action="Index"
+               class="text-decoration-none">
+                <div class="card border-0 shadow-sm text-center py-3 h-100 card-hover">
+                    <div class="card-body p-2">
+                        <i class="bi bi-shield-lock-fill fs-2 text-dark mb-2 d-block"></i>
+                        <div class="small fw-semibold text-dark">Administración</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    }
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     ALERTAS DE VIGENCIAS PRÓXIMAS A VENCER
+     Sección 7 PDF: "alertas de vigencias por vencer"
+     ═══════════════════════════════════════════════════════════ -->
+@if (Model.AlertasVigencias.Any())
+{
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-danger bg-opacity-10 border-0">
+            <h6 class="mb-0 text-danger">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                Vigencias próximas a vencer (próximos 30 días)
+            </h6>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Descripción</th>
+                        <th>Vence el</th>
+                        <th>Días restantes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var alerta in Model.AlertasVigencias)
+                    {
+                        <tr>
+                            <td>
+                                <span class="badge bg-@alerta.BadgeClass">@alerta.Tipo</span>
+                            </td>
+                            <td>@alerta.Descripcion</td>
+                            <td>@alerta.FechaVencimiento</td>
+                            <td>
+                                <span class="fw-semibold text-@alerta.BadgeClass">
+                                    @(alerta.DiasRestantes == 0 ? "Hoy" : $"{alerta.DiasRestantes} días")
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-success border-0 shadow-sm">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        No hay vigencias próximas a vencer en los próximos 30 días.
+    </div>
+}
+
+<style>
+    /* Sección 7 PDF: UI responsiva y accesible — RNF-05 */
+    .card-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
+        transition: all .2s ease;
+    }
+    .card-hover {
+        transition: all .2s ease;
+    }
+</style>
