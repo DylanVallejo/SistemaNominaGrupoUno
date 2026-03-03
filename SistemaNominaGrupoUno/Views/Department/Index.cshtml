@@ -1,0 +1,184 @@
+@model List<SistemaNominaGrupoUno.Context.Departments>
+
+@{
+    ViewData["Title"] = "Departamentos";
+    var search      = ViewBag.Search      as string ?? "";
+    var status      = ViewBag.Status      as string ?? "activo";
+    var currentPage = (int)(ViewBag.CurrentPage ?? 1);
+    var totalPages  = (int)(ViewBag.TotalPages  ?? 1);
+    var totalItems  = (int)(ViewBag.TotalItems  ?? 0);
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">
+        <i class="bi bi-building-fill me-2"></i>Departamentos
+    </h2>
+    <a asp-action="Create" class="btn btn-success">
+        <i class="bi bi-building-add me-1"></i> Nuevo Departamento
+    </a>
+</div>
+
+@* ── Alertas TempData ── *@
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill me-1"></i> @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Warning"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-1"></i> @TempData["Warning"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@* ── Barra de búsqueda y filtros (RF-10) ── *@
+<form method="get" asp-action="Index" class="mb-3">
+    <div class="row g-2">
+        <div class="col-md-6">
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input type="text" name="search" value="@search"
+                       class="form-control" placeholder="Buscar por número o nombre del departamento..." />
+            </div>
+        </div>
+        <div class="col-md-3">
+            <select name="status" class="form-select">
+                <option value=""        selected="@(status == "")">Todos</option>
+                <option value="activo"   selected="@(status == "activo")">Activos</option>
+                <option value="inactivo" selected="@(status == "inactivo")">Inactivos</option>
+            </select>
+        </div>
+        <div class="col-md-3 d-flex gap-2">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="bi bi-funnel-fill me-1"></i> Filtrar
+            </button>
+            <a asp-action="Index" class="btn btn-outline-secondary w-100">
+                <i class="bi bi-x-circle me-1"></i> Limpiar
+            </a>
+        </div>
+    </div>
+</form>
+
+@* ── Resultado ── *@
+<p class="text-muted small">
+    Mostrando <strong>@Model.Count</strong> de <strong>@totalItems</strong> departamentos
+    @if (!string.IsNullOrWhiteSpace(search)) { <span>para "<em>@search</em>"</span> }
+</p>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle me-1"></i> No se encontraron departamentos con los filtros aplicados.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle shadow-sm rounded">
+            <thead class="table-dark">
+                <tr>
+                    <th>N°</th>
+                    <th>Nombre del Departamento</th>
+                    <th class="text-center">Estado</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var dept in Model)
+                {
+                    <tr class="@(dept.IsActive ? "" : "table-secondary text-muted")">
+                        <td><span class="badge bg-secondary">#@dept.DeptNo</span></td>
+                        <td>
+                            <i class="bi bi-building me-1 text-muted"></i>
+                            <strong>@dept.DeptName</strong>
+                        </td>
+                        <td class="text-center">
+                            @if (dept.IsActive)
+                            {
+                                <span class="badge bg-success">Activo</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Inactivo</span>
+                            }
+                        </td>
+                        <td class="text-center">
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a asp-action="Details" asp-route-id="@dept.DeptNo"
+                                   class="btn btn-outline-info" title="Ver detalle">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a asp-action="Edit" asp-route-id="@dept.DeptNo"
+                                   class="btn btn-outline-warning" title="Editar">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                @if (dept.IsActive)
+                                {
+                                    <form asp-action="Deactivate" asp-route-id="@dept.DeptNo"
+                                          method="post" class="d-inline"
+                                          onsubmit="return confirm('¿Desea dar de baja el departamento @dept.DeptName?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-outline-danger" title="Dar de baja">
+                                            <i class="bi bi-building-x"></i>
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form asp-action="Activate" asp-route-id="@dept.DeptNo"
+                                          method="post" class="d-inline"
+                                          onsubmit="return confirm('¿Desea reactivar el departamento @dept.DeptName?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-outline-success" title="Reactivar">
+                                            <i class="bi bi-building-check"></i>
+                                        </button>
+                                    </form>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @* ── Paginación (RNF-01) ── *@
+    @if (totalPages > 1)
+    {
+        <nav aria-label="Paginación de departamentos">
+            <ul class="pagination justify-content-center">
+                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index"
+                       asp-route-page="@(currentPage - 1)"
+                       asp-route-search="@search"
+                       asp-route-status="@status">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+
+                @for (int p = 1; p <= totalPages; p++)
+                {
+                    <li class="page-item @(p == currentPage ? "active" : "")">
+                        <a class="page-link" asp-action="Index"
+                           asp-route-page="@p"
+                           asp-route-search="@search"
+                           asp-route-status="@status">@p</a>
+                    </li>
+                }
+
+                <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index"
+                       asp-route-page="@(currentPage + 1)"
+                       asp-route-search="@search"
+                       asp-route-status="@status">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <p class="text-center text-muted small">Página @currentPage de @totalPages</p>
+    }
+}

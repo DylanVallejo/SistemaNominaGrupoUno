@@ -1,0 +1,95 @@
+@model SistemaNominaGrupoUno.Context.DTOS.TitleViewModel
+
+@{
+    ViewData["Title"] = "Editar Título";
+}
+
+<div class="d-flex align-items-center mb-3 gap-2">
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i>
+    </a>
+    <h2 class="mb-0">
+        <i class="bi bi-pencil-square me-2 text-warning"></i>Editar Título / Cargo
+    </h2>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card shadow-sm">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">
+                    <i class="bi bi-award me-2"></i>Modificar Título
+                </h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Edit"
+                      asp-route-empNo="@Model.EmpNo"
+                      asp-route-fromDate="@Model.OriginalFromDate"
+                      method="post" novalidate>
+                    @Html.AntiForgeryToken()
+                    <input asp-for="EmpNo"            type="hidden" />
+                    <input asp-for="FromDate"         type="hidden" />
+                    <input asp-for="OriginalFromDate" type="hidden" />
+
+                    @* Errores globales *@
+                    @if (!ViewData.ModelState.IsValid &&
+                         ViewData.ModelState.ContainsKey(string.Empty))
+                    {
+                        <div class="alert alert-danger">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                            @Html.ValidationMessage(string.Empty)
+                        </div>
+                    }
+
+                    <div class="row g-3 mb-3">
+                        @* Empleado (solo lectura) *@
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-muted small text-uppercase">Empleado</label>
+                            <input type="text" class="form-control bg-light"
+                                   value="@ViewBag.EmpDisplay" readonly />
+                        </div>
+
+                        @* Fecha Desde (solo lectura — es parte de la PK) *@
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-muted small text-uppercase">Fecha Desde</label>
+                            <input type="text" class="form-control bg-light"
+                                   value="@Model.FromDate" readonly />
+                            <div class="form-text">La fecha de inicio es fija (forma parte de la clave).</div>
+                        </div>
+
+                        @* Fecha Hasta (editable) *@
+                        <div class="col-md-6">
+                            <label asp-for="ToDate" class="form-label fw-semibold"></label>
+                            <input asp-for="ToDate" type="date" class="form-control" />
+                            <span asp-validation-for="ToDate" class="text-danger small"></span>
+                            <div class="form-text">Dejar vacío si el cargo no tiene fecha de fin.</div>
+                        </div>
+
+                        @* Título / Cargo (editable) *@
+                        <div class="col-12">
+                            <label asp-for="TitleName" class="form-label fw-semibold"></label>
+                            <input asp-for="TitleName" class="form-control"
+                                   placeholder="Ej: Desarrollador Senior" maxlength="50" />
+                            <span asp-validation-for="TitleName" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle me-1"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-warning">
+                            <i class="bi bi-floppy me-1"></i> Guardar Cambios
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
