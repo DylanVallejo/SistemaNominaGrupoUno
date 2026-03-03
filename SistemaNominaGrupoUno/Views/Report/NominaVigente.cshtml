@@ -1,0 +1,102 @@
+@model List<SistemaNominaGrupoUno.Controllers.NominaVigenteRow>
+
+@{
+    ViewData["Title"] = "Nómina Vigente";
+    var deptNo    = ViewBag.DeptNo    as int?;
+    var deptNombre = ViewBag.DeptNombre as string ?? "Todos los departamentos";
+}
+
+<div class="d-flex align-items-center mb-3 gap-2">
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i>
+    </a>
+    <h2 class="mb-0">
+        <i class="bi bi-cash-coin me-2 text-success"></i>Nómina Vigente
+    </h2>
+</div>
+
+@* ── Filtros ── *@
+<form method="get" asp-action="NominaVigente" class="mb-3">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-5">
+            <label class="form-label fw-semibold small text-uppercase">Departamento</label>
+            @Html.DropDownList("deptNo", ViewBag.Departments as SelectList,
+                "-- Todos los departamentos --",
+                new { @class = "form-select" })
+        </div>
+        <div class="col-md-4 d-flex gap-2">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="bi bi-funnel-fill me-1"></i> Filtrar
+            </button>
+            <a asp-action="NominaVigente" class="btn btn-outline-secondary w-100">
+                <i class="bi bi-x-circle me-1"></i> Limpiar
+            </a>
+        </div>
+        <div class="col-md-3 d-flex gap-2">
+            <a asp-action="NominaVigentePdf"
+               asp-route-deptNo="@deptNo"
+               class="btn btn-danger w-100" title="Exportar PDF">
+                <i class="bi bi-file-earmark-pdf-fill me-1"></i> PDF
+            </a>
+            <a asp-action="NominaVigenteExcel"
+               asp-route-deptNo="@deptNo"
+               class="btn btn-success w-100" title="Exportar Excel">
+                <i class="bi bi-file-earmark-spreadsheet-fill me-1"></i> Excel
+            </a>
+        </div>
+    </div>
+</form>
+
+<p class="text-muted small">
+    <strong>@deptNombre</strong> —
+    <strong>@Model.Count</strong> empleado(s) con salario vigente
+</p>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle me-1"></i>
+        No hay empleados con salario vigente para los filtros aplicados.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle shadow-sm rounded">
+            <thead class="table-dark">
+                <tr>
+                    <th>Departamento</th>
+                    <th class="text-center">#</th>
+                    <th>Empleado</th>
+                    <th class="text-end">Salario Vigente</th>
+                    <th class="text-center">Vigente Desde</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var r in Model)
+                {
+                    <tr>
+                        <td>@r.DeptName</td>
+                        <td class="text-center"><span class="badge bg-secondary">#@r.EmpNo</span></td>
+                        <td><strong>@r.NombreCompleto</strong></td>
+                        <td class="text-end fw-bold text-success">
+                            <i class="bi bi-currency-dollar text-muted"></i>@r.Salario.ToString("N0")
+                        </td>
+                        <td class="text-center small text-muted">
+                            <i class="bi bi-calendar-event me-1"></i>@r.Desde
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot class="table-light">
+                <tr>
+                    <td colspan="3" class="fw-bold">Total nómina</td>
+                    <td class="text-end fw-bold text-success fs-5">
+                        $@Model.Sum(r => r.Salario).ToString("N0")
+                    </td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+}

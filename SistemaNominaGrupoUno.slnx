@@ -1,4 +1,6 @@
 <Solution>
+  <Project Path="SistemaNominaGrupoUno.Tests/SistemaNominaGrupoUno.Tests.csproj">
+    <Build Solution="Debug|*" Project="false" />
+  </Project>
   <Project Path="SistemaNominaGrupoUno/SistemaNominaGrupoUno.csproj" />
-  <Project Path="SistemaNominaGrupoUno.Tests/SistemaNominaGrupoUno.Tests.csproj" />
 </Solution>
