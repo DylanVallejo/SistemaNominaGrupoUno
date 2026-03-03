@@ -1,0 +1,106 @@
+@model List<SistemaNominaGrupoUno.Controllers.DeptEstructura>
+
+@{
+    ViewData["Title"] = "Estructura Organizacional";
+    var deptNo = ViewBag.DeptNo as int?;
+}
+
+<div class="d-flex align-items-center mb-3 gap-2">
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i>
+    </a>
+    <h2 class="mb-0">
+        <i class="bi bi-diagram-3-fill me-2 text-info"></i>Estructura Organizacional
+    </h2>
+</div>
+
+@* ── Filtros ── *@
+<form method="get" asp-action="EstructuraOrganizacional" class="mb-3">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-5">
+            <label class="form-label fw-semibold small text-uppercase">Departamento</label>
+            @Html.DropDownList("deptNo", ViewBag.Departments as SelectList,
+                "-- Todos los departamentos --",
+                new { @class = "form-select" })
+        </div>
+        <div class="col-md-4 d-flex gap-2">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="bi bi-funnel-fill me-1"></i> Filtrar
+            </button>
+            <a asp-action="EstructuraOrganizacional" class="btn btn-outline-secondary w-100">
+                <i class="bi bi-x-circle me-1"></i> Limpiar
+            </a>
+        </div>
+        <div class="col-md-3 d-flex gap-2">
+            <a asp-action="EstructuraOrganizacionalPdf"
+               asp-route-deptNo="@deptNo"
+               class="btn btn-danger w-100">
+                <i class="bi bi-file-earmark-pdf-fill me-1"></i> PDF
+            </a>
+            <a asp-action="EstructuraOrganizacionalExcel"
+               asp-route-deptNo="@deptNo"
+               class="btn btn-success w-100">
+                <i class="bi bi-file-earmark-spreadsheet-fill me-1"></i> Excel
+            </a>
+        </div>
+    </div>
+</form>
+
+<p class="text-muted small">
+    <strong>@Model.Count</strong> departamento(s) mostrado(s)
+</p>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle me-1"></i>
+        No se encontraron departamentos activos con los filtros aplicados.
+    </div>
+}
+else
+{
+    @foreach (var dept in Model)
+    {
+        <div class="card shadow-sm mb-3">
+            @* Departamento *@
+            <div class="card-header bg-dark text-white d-flex align-items-center gap-2">
+                <i class="bi bi-building-fill"></i>
+                <strong>@dept.DeptName</strong>
+                <span class="badge bg-secondary ms-1">@dept.DeptNo</span>
+            </div>
+            <div class="card-body p-0">
+                @* Gerente *@
+                <div class="d-flex align-items-center gap-2 px-4 py-2 bg-info bg-opacity-10 border-bottom">
+                    <i class="bi bi-person-badge-fill text-info fs-5"></i>
+                    <div>
+                        <small class="text-muted text-uppercase fw-bold" style="font-size: .7rem;">Gerente vigente</small>
+                        <div class="fw-semibold">@dept.ManagerNombre</div>
+                    </div>
+                </div>
+                @* Empleados *@
+                <div class="px-4 py-3">
+                    <small class="text-muted text-uppercase fw-bold" style="font-size: .7rem;">
+                        <i class="bi bi-people-fill me-1"></i>Empleados asignados (@dept.Empleados.Count)
+                    </small>
+                    @if (dept.Empleados.Count == 0)
+                    {
+                        <p class="text-muted fst-italic small mb-0 mt-1">Sin empleados asignados actualmente.</p>
+                    }
+                    else
+                    {
+                        <div class="row mt-2 g-1">
+                            @foreach (var emp in dept.Empleados)
+                            {
+                                <div class="col-md-4 col-sm-6">
+                                    <span class="badge bg-light text-dark border w-100 text-start py-1 px-2">
+                                        <i class="bi bi-person me-1 text-muted"></i>@emp
+                                    </span>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+}
