@@ -1,0 +1,53 @@
+@model SistemaNominaGrupoUno.Context.DTOS.DepartmentViewModel
+
+@{
+    ViewData["Title"] = "Editar Departamento";
+}
+
+<div class="d-flex align-items-center mb-3 gap-2">
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i>
+    </a>
+    <h2 class="mb-0"><i class="bi bi-pencil-square me-2 text-warning"></i>Editar Departamento</h2>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">
+                    <i class="bi bi-building me-2"></i>Modificar — Depto. #@Model.DeptNo
+                </h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Edit" asp-route-id="@Model.DeptNo" method="post" novalidate>
+                    @Html.AntiForgeryToken()
+                    <input asp-for="DeptNo" type="hidden" />
+
+                    <div class="mb-3">
+                        <label asp-for="DeptName" class="form-label fw-semibold"></label>
+                        <input asp-for="DeptName" class="form-control"
+                               placeholder="Ej: Recursos Humanos" maxlength="50" />
+                        <span asp-validation-for="DeptName" class="text-danger small"></span>
+                        <div class="form-text">Máximo 50 caracteres. El nombre debe ser único.</div>
+                    </div>
+
+                    <hr class="mt-4" />
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle me-1"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-warning">
+                            <i class="bi bi-floppy me-1"></i> Guardar Cambios
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
