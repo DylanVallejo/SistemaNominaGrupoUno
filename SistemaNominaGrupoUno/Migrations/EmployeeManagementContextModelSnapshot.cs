@@ -34,6 +34,9 @@ namespace SistemaNominaGrupoUno.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.HasKey("DeptNo");
 
                     b.ToTable("Departments", (string)null);
@@ -127,6 +130,38 @@ namespace SistemaNominaGrupoUno.Migrations
                     b.HasKey("EmpNo");
 
                     b.ToTable("Employees", (string)null);
+                });
+
+            modelBuilder.Entity("SistemaNominaGrupoUno.Context.LogActividad", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Accion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Detalle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Entidad")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Usuario")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Log_Actividad", (string)null);
                 });
 
             modelBuilder.Entity("SistemaNominaGrupoUno.Context.LogAuditoriaSalarios", b =>
@@ -246,6 +281,10 @@ namespace SistemaNominaGrupoUno.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Rol")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
