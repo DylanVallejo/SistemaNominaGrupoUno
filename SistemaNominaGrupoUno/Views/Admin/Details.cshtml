@@ -1,0 +1,93 @@
+@model SistemaNominaGrupoUno.Context.Users
+
+@{
+    ViewData["Title"] = "Detalle de Usuario";
+}
+
+<div class="d-flex align-items-center mb-3 gap-2">
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i>
+    </a>
+    <h2 class="mb-0">
+        <i class="bi bi-person-circle me-2 text-secondary"></i>Detalle de Usuario
+    </h2>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center
+                        @(Model.Rol == "Administrador" ? "bg-danger text-white" : "bg-info text-dark")">
+                <h5 class="mb-0">
+                    <i class="bi bi-shield-lock me-2"></i>@Model.Usuario
+                </h5>
+                @if (Model.Rol == "Administrador")
+                {
+                    <span class="badge bg-light text-danger fs-6">Administrador</span>
+                }
+                else
+                {
+                    <span class="badge bg-light text-dark fs-6">RRHH</span>
+                }
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small fw-bold text-uppercase">N° Empleado</label>
+                        <p class="mb-0"><span class="badge bg-secondary">#@Model.EmpNo</span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small fw-bold text-uppercase">Empleado</label>
+                        <p class="mb-0 fs-5">
+                            <i class="bi bi-person-fill me-1 text-muted"></i>
+                            @Model.Employee.FirstName @Model.Employee.LastName
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small fw-bold text-uppercase">Usuario</label>
+                        <p class="mb-0 fs-5"><code>@Model.Usuario</code></p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small fw-bold text-uppercase">Rol</label>
+                        <p class="mb-0 fs-5">
+                            @if (Model.Rol == "Administrador")
+                            {
+                                <span class="badge bg-danger fs-6">
+                                    <i class="bi bi-shield-fill me-1"></i>Administrador
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-info text-dark fs-6">
+                                    <i class="bi bi-person-badge me-1"></i>RRHH
+                                </span>
+                            }
+                        </p>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label text-muted small fw-bold text-uppercase">Contraseña</label>
+                        <p class="mb-0 text-muted fst-italic small">
+                            <i class="bi bi-lock-fill me-1"></i>
+                            Almacenada como hash BCrypt — no visible por seguridad.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer d-flex justify-content-between align-items-center">
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-list-ul me-1"></i> Volver al Listado
+                </a>
+                <div class="d-flex gap-2">
+                    <a asp-action="Edit" asp-route-empNo="@Model.EmpNo"
+                       class="btn btn-warning">
+                        <i class="bi bi-pencil-square me-1"></i> Editar
+                    </a>
+                    <a asp-action="ResetPassword" asp-route-empNo="@Model.EmpNo"
+                       class="btn btn-danger">
+                        <i class="bi bi-key me-1"></i> Restablecer Contraseña
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
