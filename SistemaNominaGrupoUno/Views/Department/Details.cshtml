@@ -1,0 +1,95 @@
+@model SistemaNominaGrupoUno.Context.Departments
+
+@{
+    ViewData["Title"] = "Detalle Departamento";
+}
+
+<div class="d-flex align-items-center mb-3 gap-2">
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i>
+    </a>
+    <h2 class="mb-0"><i class="bi bi-building-fill me-2 text-info"></i>Detalle del Departamento</h2>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center
+                        @(Model.IsActive ? "bg-info text-white" : "bg-secondary text-white")">
+                <h5 class="mb-0">
+                    <i class="bi bi-building me-2"></i>
+                    @Model.DeptName
+                </h5>
+                @if (Model.IsActive)
+                {
+                    <span class="badge bg-success fs-6">Activo</span>
+                }
+                else
+                {
+                    <span class="badge bg-danger fs-6">Inactivo</span>
+                }
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small fw-bold text-uppercase">N° Departamento</label>
+                        <p class="mb-0 fs-5"><span class="badge bg-secondary">#@Model.DeptNo</span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small fw-bold text-uppercase">Nombre</label>
+                        <p class="mb-0 fs-5">
+                            <i class="bi bi-building me-1 text-muted"></i>@Model.DeptName
+                        </p>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label text-muted small fw-bold text-uppercase">Estado</label>
+                        <p class="mb-0">
+                            @if (Model.IsActive)
+                            {
+                                <span class="badge bg-success fs-6">
+                                    <i class="bi bi-check-circle me-1"></i>Activo
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary fs-6">
+                                    <i class="bi bi-x-circle me-1"></i>Inactivo
+                                </span>
+                            }
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer d-flex justify-content-between align-items-center">
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-list-ul me-1"></i> Volver al Listado
+                </a>
+                <div class="d-flex gap-2">
+                    <a asp-action="Edit" asp-route-id="@Model.DeptNo" class="btn btn-warning">
+                        <i class="bi bi-pencil-square me-1"></i> Editar
+                    </a>
+                    @if (Model.IsActive)
+                    {
+                        <form asp-action="Deactivate" asp-route-id="@Model.DeptNo" method="post"
+                              onsubmit="return confirm('¿Desea dar de baja el departamento @Model.DeptName?');">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-building-x me-1"></i> Dar de Baja
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-action="Activate" asp-route-id="@Model.DeptNo" method="post"
+                              onsubmit="return confirm('¿Desea reactivar el departamento @Model.DeptName?');">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-building-check me-1"></i> Reactivar
+                            </button>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

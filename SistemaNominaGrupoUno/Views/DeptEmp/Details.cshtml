@@ -1,0 +1,115 @@
+@model SistemaNominaGrupoUno.Context.DeptEmp
+
+@{
+    ViewData["Title"] = "Detalle de Asignación";
+    var today   = DateTime.Today.ToString("yyyy-MM-dd");
+    var vigente = string.IsNullOrEmpty(Model.ToDate) ||
+                  string.Compare(Model.ToDate, today) >= 0;
+}
+
+<div class="d-flex align-items-center mb-3 gap-2">
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i>
+    </a>
+    <h2 class="mb-0">
+        <i class="bi bi-diagram-3-fill me-2 text-info"></i>Detalle de Asignación
+    </h2>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center
+                        @(vigente ? "bg-info text-white" : "bg-secondary text-white")">
+                <h5 class="mb-0">
+                    <i class="bi bi-diagram-3 me-2"></i>
+                    @Model.Employee.LastName, @Model.Employee.FirstName
+                    &rarr; @Model.Department.DeptName
+                </h5>
+                @if (vigente)
+                {
+                    <span class="badge bg-success fs-6">Vigente</span>
+                }
+                else
+                {
+                    <span class="badge bg-danger fs-6">Finalizado</span>
+                }
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small fw-bold text-uppercase">N° Empleado</label>
+                        <p class="mb-0 fs-5">
+                            <span class="badge bg-secondary">#@Model.EmpNo</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small fw-bold text-uppercase">Empleado</label>
+                        <p class="mb-0 fs-5">
+                            <i class="bi bi-person-fill me-1 text-muted"></i>
+                            @Model.Employee.FirstName @Model.Employee.LastName
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small fw-bold text-uppercase">N° Departamento</label>
+                        <p class="mb-0 fs-5">
+                            <span class="badge bg-secondary">#@Model.DeptNo</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small fw-bold text-uppercase">Departamento</label>
+                        <p class="mb-0 fs-5">
+                            <i class="bi bi-building me-1 text-muted"></i>
+                            @Model.Department.DeptName
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small fw-bold text-uppercase">Fecha Desde</label>
+                        <p class="mb-0 fs-5">
+                            <i class="bi bi-calendar-event me-1 text-muted"></i>@Model.FromDate
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small fw-bold text-uppercase">Fecha Hasta</label>
+                        <p class="mb-0 fs-5">
+                            @if (string.IsNullOrEmpty(Model.ToDate))
+                            {
+                                <span class="text-success fst-italic">
+                                    <i class="bi bi-infinity me-1"></i>Sin fecha de fin
+                                </span>
+                            }
+                            else
+                            {
+                                <i class="bi bi-calendar-x me-1 text-muted"></i>@Model.ToDate
+                            }
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer d-flex justify-content-between align-items-center">
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-list-ul me-1"></i> Volver al Listado
+                </a>
+                <div class="d-flex gap-2">
+                    <a asp-action="Edit"
+                       asp-route-empNo="@Model.EmpNo" asp-route-deptNo="@Model.DeptNo"
+                       class="btn btn-warning">
+                        <i class="bi bi-pencil-square me-1"></i> Editar
+                    </a>
+                    @if (vigente)
+                    {
+                        <form asp-action="EndAssignment"
+                              asp-route-empNo="@Model.EmpNo" asp-route-deptNo="@Model.DeptNo"
+                              method="post"
+                              onsubmit="return confirm('¿Desea terminar la vigencia de @Model.Employee.FirstName @Model.Employee.LastName en @Model.Department.DeptName?');">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-calendar-check me-1"></i> Terminar Vigencia
+                            </button>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

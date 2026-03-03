@@ -1,0 +1,167 @@
+@model List<SistemaNominaGrupoUno.Context.Users>
+
+@{
+    ViewData["Title"] = "Administración — Usuarios";
+    var search      = ViewBag.Search      as string ?? "";
+    var currentPage = (int)(ViewBag.CurrentPage ?? 1);
+    var totalPages  = (int)(ViewBag.TotalPages  ?? 1);
+    var totalItems  = (int)(ViewBag.TotalItems  ?? 0);
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">
+        <i class="bi bi-shield-lock-fill me-2 text-dark"></i>Administración — Usuarios
+    </h2>
+    <div class="d-flex gap-2">
+        <a asp-action="LogActividadView" class="btn btn-outline-secondary">
+            <i class="bi bi-activity me-1"></i> Log de Actividad
+        </a>
+        <a asp-action="Config" class="btn btn-outline-info">
+            <i class="bi bi-gear-fill me-1"></i> Configuración
+        </a>
+        <a asp-action="Create" class="btn btn-dark">
+            <i class="bi bi-plus-circle-fill me-1"></i> Nuevo Usuario
+        </a>
+    </div>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill me-1"></i> @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Warning"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-1"></i> @TempData["Warning"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@* ── Barra de búsqueda ── *@
+<form method="get" asp-action="Index" class="mb-3">
+    <div class="row g-2">
+        <div class="col-md-7">
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input type="text" name="search" value="@search"
+                       class="form-control"
+                       placeholder="Buscar por usuario, rol o nombre del empleado..." />
+            </div>
+        </div>
+        <div class="col-md-5 d-flex gap-2">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="bi bi-funnel-fill me-1"></i> Filtrar
+            </button>
+            <a asp-action="Index" class="btn btn-outline-secondary w-100">
+                <i class="bi bi-x-circle me-1"></i> Limpiar
+            </a>
+        </div>
+    </div>
+</form>
+
+<p class="text-muted small">
+    Mostrando <strong>@Model.Count</strong> de <strong>@totalItems</strong> usuarios
+    @if (!string.IsNullOrWhiteSpace(search)) { <span>para "<em>@search</em>"</span> }
+</p>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle me-1"></i> No se encontraron usuarios con los filtros aplicados.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle shadow-sm rounded">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Empleado</th>
+                    <th>Usuario</th>
+                    <th class="text-center">Rol</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var u in Model)
+                {
+                    <tr>
+                        <td><span class="badge bg-secondary">#@u.EmpNo</span></td>
+                        <td>
+                            <strong>@u.Employee.LastName</strong>, @u.Employee.FirstName
+                        </td>
+                        <td>
+                            <i class="bi bi-person-circle me-1 text-muted"></i>
+                            <code>@u.Usuario</code>
+                        </td>
+                        <td class="text-center">
+                            @if (u.Rol == "Administrador")
+                            {
+                                <span class="badge bg-danger">
+                                    <i class="bi bi-shield-fill me-1"></i>Administrador
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-info text-dark">
+                                    <i class="bi bi-person-badge me-1"></i>RRHH
+                                </span>
+                            }
+                        </td>
+                        <td class="text-center">
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a asp-action="Details" asp-route-empNo="@u.EmpNo"
+                                   class="btn btn-outline-secondary" title="Ver detalle">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a asp-action="Edit" asp-route-empNo="@u.EmpNo"
+                                   class="btn btn-outline-warning" title="Editar">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <a asp-action="ResetPassword" asp-route-empNo="@u.EmpNo"
+                                   class="btn btn-outline-danger" title="Restablecer contraseña">
+                                    <i class="bi bi-key"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if (totalPages > 1)
+    {
+        <nav aria-label="Paginación de usuarios">
+            <ul class="pagination justify-content-center">
+                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index"
+                       asp-route-page="@(currentPage - 1)"
+                       asp-route-search="@search">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+                @for (int p = 1; p <= totalPages; p++)
+                {
+                    <li class="page-item @(p == currentPage ? "active" : "")">
+                        <a class="page-link" asp-action="Index"
+                           asp-route-page="@p"
+                           asp-route-search="@search">@p</a>
+                    </li>
+                }
+                <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index"
+                       asp-route-page="@(currentPage + 1)"
+                       asp-route-search="@search">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <p class="text-center text-muted small">Página @currentPage de @totalPages</p>
+    }
+}
