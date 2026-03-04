@@ -1,0 +1,126 @@
+@model SistemaNominaGrupoUno.Controllers.ConfigSistemaViewModel
+
+@{
+    ViewData["Title"] = "Configuración del Sistema";
+}
+
+<div class="d-flex align-items-center mb-3 gap-2">
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i>
+    </a>
+    <h2 class="mb-0">
+        <i class="bi bi-gear-fill me-2 text-info"></i>Configuración del Sistema
+    </h2>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+
+        @* ── Parámetros del sistema (RF-14) ── *@
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-sliders me-2"></i>Parámetros Básicos
+                    <span class="badge bg-light text-info ms-2 small">RF-14</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small fw-bold text-uppercase">Nombre del Sistema</label>
+                        <p class="mb-0 fs-6 fw-semibold">
+                            <i class="bi bi-building me-1 text-muted"></i>@Model.NombreEmpresa
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small fw-bold text-uppercase">Versión</label>
+                        <p class="mb-0 fs-6">
+                            <span class="badge bg-secondary">v@Model.VersionSistema</span>
+                        </p>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label text-muted small fw-bold text-uppercase">Formato de Fecha</label>
+                        <p class="mb-0">
+                            <code>@Model.FormatoFecha</code>
+                            <span class="text-muted small ms-1">(ej: @DateTime.Today.ToString(Model.FormatoFecha))</span>
+                        </p>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label text-muted small fw-bold text-uppercase">Símbolo Moneda</label>
+                        <p class="mb-0 fs-5 fw-bold text-success">@Model.SimboloMoneda</p>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label text-muted small fw-bold text-uppercase">Locale / Cultura</label>
+                        <p class="mb-0"><code>@Model.LocaleCultura</code></p>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label text-muted small fw-bold text-uppercase">Última Actualización</label>
+                        <p class="mb-0 text-muted small">@Model.FechaActualizacion</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @* ── Seguridad (RF-12 / RNF-02) ── *@
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-shield-lock-fill me-2"></i>Seguridad
+                    <span class="badge bg-light text-dark ms-2 small">RF-12 / RNF-02</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small fw-bold text-uppercase">Algoritmo de Hash</label>
+                        <p class="mb-0">
+                            <span class="badge bg-success">BCrypt</span>
+                            <span class="text-muted small ms-1">Work Factor: 12</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small fw-bold text-uppercase">Roles Disponibles</label>
+                        <p class="mb-0">
+                            <span class="badge bg-danger me-1">Administrador</span>
+                            <span class="badge bg-info text-dark">RRHH</span>
+                        </p>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label text-muted small fw-bold text-uppercase">Estado de Autenticación</label>
+                        <p class="mb-0">
+                            <span class="badge bg-warning text-dark">
+                                <i class="bi bi-hourglass-split me-1"></i>
+                                Pendiente de implementación (RF-01)
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @* ── Stack técnico ── *@
+        <div class="card shadow-sm">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-stack me-2"></i>Stack Técnico
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-2 small">
+                    <div class="col-md-6">
+                        <p class="mb-1"><strong>Framework:</strong> ASP.NET Core 10.0 MVC</p>
+                        <p class="mb-1"><strong>ORM:</strong> Entity Framework Core 10.0.3</p>
+                        <p class="mb-1"><strong>Base de datos:</strong> SQL Server Express</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-1"><strong>UI:</strong> Bootstrap 5 + Bootstrap Icons</p>
+                        <p class="mb-1"><strong>PDF:</strong> QuestPDF 2025.1.0</p>
+                        <p class="mb-1"><strong>Excel:</strong> ClosedXML 0.104.1</p>
+                        <p class="mb-1"><strong>Hash:</strong> BCrypt.Net-Next 4.0.3</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

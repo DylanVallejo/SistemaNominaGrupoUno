@@ -1,0 +1,93 @@
+@model SistemaNominaGrupoUno.Context.DTOS.DeptEmpViewModel
+
+@{
+    ViewData["Title"] = "Nueva Asignación";
+}
+
+<div class="d-flex align-items-center mb-3 gap-2">
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i>
+    </a>
+    <h2 class="mb-0">
+        <i class="bi bi-plus-circle-fill me-2 text-success"></i>Nueva Asignación a Departamento
+    </h2>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-diagram-3 me-2"></i>Datos de la Asignación
+                </h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post" novalidate>
+                    @Html.AntiForgeryToken()
+
+                    @* Errores globales de solapamiento *@
+                    @if (!ViewData.ModelState.IsValid &&
+                         ViewData.ModelState.ContainsKey(string.Empty))
+                    {
+                        <div class="alert alert-danger">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                            @Html.ValidationMessage(string.Empty)
+                        </div>
+                    }
+
+                    <div class="row g-3">
+                        @* Empleado *@
+                        <div class="col-12">
+                            <label asp-for="EmpNo" class="form-label fw-semibold"></label>
+                            <select asp-for="EmpNo" asp-items="ViewBag.Employees"
+                                    class="form-select">
+                                <option value="">-- Seleccione un empleado --</option>
+                            </select>
+                            <span asp-validation-for="EmpNo" class="text-danger small"></span>
+                        </div>
+
+                        @* Departamento *@
+                        <div class="col-12">
+                            <label asp-for="DeptNo" class="form-label fw-semibold"></label>
+                            <select asp-for="DeptNo" asp-items="ViewBag.Departments"
+                                    class="form-select">
+                                <option value="">-- Seleccione un departamento --</option>
+                            </select>
+                            <span asp-validation-for="DeptNo" class="text-danger small"></span>
+                        </div>
+
+                        @* Fecha Desde *@
+                        <div class="col-md-6">
+                            <label asp-for="FromDate" class="form-label fw-semibold"></label>
+                            <input asp-for="FromDate" type="date" class="form-control" />
+                            <span asp-validation-for="FromDate" class="text-danger small"></span>
+                        </div>
+
+                        @* Fecha Hasta *@
+                        <div class="col-md-6">
+                            <label asp-for="ToDate" class="form-label fw-semibold"></label>
+                            <input asp-for="ToDate" type="date" class="form-control" />
+                            <span asp-validation-for="ToDate" class="text-danger small"></span>
+                            <div class="form-text">Dejar vacío si la asignación no tiene fecha de fin.</div>
+                        </div>
+                    </div>
+
+                    <hr class="mt-4" />
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle me-1"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-floppy me-1"></i> Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -20,19 +20,93 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Employee" asp-action="Index">
-                                <i class="bi bi-people-fill me-1"></i>Empleados
-                            </a>
-                        </li>
-                    </ul>
+                    @* RF-01: Mostrar menú de navegación solo para usuarios autenticados *@
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <ul class="navbar-nav flex-grow-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">
+                                    <i class="bi bi-house-fill me-1"></i>Inicio
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Employee" asp-action="Index">
+                                    <i class="bi bi-people-fill me-1"></i>Empleados
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Department" asp-action="Index">
+                                    <i class="bi bi-building-fill me-1"></i>Departamentos
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="DeptEmp" asp-action="Index">
+                                    <i class="bi bi-diagram-3-fill me-1"></i>Asignaciones
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="DeptManager" asp-action="Index">
+                                    <i class="bi bi-person-badge-fill me-1"></i>Gerentes
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Title" asp-action="Index">
+                                    <i class="bi bi-award-fill me-1"></i>Títulos
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Salary" asp-action="Index">
+                                    <i class="bi bi-cash-coin me-1"></i>Salarios
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Report" asp-action="Index">
+                                    <i class="bi bi-bar-chart-fill me-1"></i>Reportes
+                                </a>
+                            </li>
+                            @if (User.IsInRole("Administrador"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">
+                                        <i class="bi bi-shield-lock-fill me-1"></i>Administración
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+
+                        @* RF-01: Info del usuario autenticado + botón de logout *@
+                        <ul class="navbar-nav ms-auto align-items-center">
+                            <li class="nav-item me-2">
+                                @{
+                                    var nombreCompleto = User.FindFirst("NombreCompleto")?.Value ?? User.Identity?.Name;
+                                    var rol = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value ?? "";
+                                    var badgeClass = rol == "Administrador" ? "bg-danger" : "bg-primary";
+                                }
+                                <span class="text-muted small">
+                                    <i class="bi bi-person-circle me-1"></i>@nombreCompleto
+                                    <span class="badge @badgeClass ms-1">@rol</span>
+                                </span>
+                            </li>
+                            <li class="nav-item">
+                                <form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                                        <i class="bi bi-box-arrow-right me-1"></i>Cerrar sesión
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    }
+                    else
+                    {
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Auth" asp-action="Login">
+                                    <i class="bi bi-box-arrow-in-right me-1"></i>Iniciar sesión
+                                </a>
+                            </li>
+                        </ul>
+                    }
                 </div>
             </div>
         </nav>

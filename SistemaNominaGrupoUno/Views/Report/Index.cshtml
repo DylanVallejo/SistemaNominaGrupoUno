@@ -1,0 +1,94 @@
+@{
+    ViewData["Title"] = "Reportes";
+}
+
+<div class="d-flex align-items-center mb-4 gap-2">
+    <h2 class="mb-0">
+        <i class="bi bi-bar-chart-fill me-2 text-primary"></i>Reportes
+    </h2>
+</div>
+
+<div class="row g-4">
+
+    @* ── Reporte A: Nómina Vigente ── *@
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-cash-coin me-2"></i>Nómina Vigente
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted small">
+                    Lista de empleados activos con su salario vigente,
+                    filtrada opcionalmente por departamento.
+                </p>
+                <ul class="list-unstyled small text-muted mb-3">
+                    <li><i class="bi bi-check2 text-success me-1"></i>Empleado y departamento</li>
+                    <li><i class="bi bi-check2 text-success me-1"></i>Salario activo</li>
+                    <li><i class="bi bi-check2 text-success me-1"></i>Filtro por departamento</li>
+                </ul>
+            </div>
+            <div class="card-footer bg-transparent">
+                <a asp-action="NominaVigente" class="btn btn-success w-100">
+                    <i class="bi bi-eye me-1"></i> Ver reporte
+                </a>
+            </div>
+        </div>
+    </div>
+
+    @* ── Reporte B: Cambios Salariales ── *@
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">
+                    <i class="bi bi-arrow-left-right me-2"></i>Cambios Salariales
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted small">
+                    Historial de altas y modificaciones salariales dentro
+                    de un rango de fechas.
+                </p>
+                <ul class="list-unstyled small text-muted mb-3">
+                    <li><i class="bi bi-check2 text-success me-1"></i>Fecha y usuario del cambio</li>
+                    <li><i class="bi bi-check2 text-success me-1"></i>Monto y detalle del cambio</li>
+                    <li><i class="bi bi-check2 text-success me-1"></i>Filtro por rango de fechas</li>
+                </ul>
+            </div>
+            <div class="card-footer bg-transparent">
+                <a asp-action="CambiosSalariales" class="btn btn-warning w-100">
+                    <i class="bi bi-eye me-1"></i> Ver reporte
+                </a>
+            </div>
+        </div>
+    </div>
+
+    @* ── Reporte C: Estructura Organizacional ── *@
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-diagram-3-fill me-2"></i>Estructura Organizacional
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted small">
+                    Jerarquía vigente: departamento → gerente actual →
+                    empleados asignados.
+                </p>
+                <ul class="list-unstyled small text-muted mb-3">
+                    <li><i class="bi bi-check2 text-success me-1"></i>Departamentos activos</li>
+                    <li><i class="bi bi-check2 text-success me-1"></i>Gerente vigente por depto.</li>
+                    <li><i class="bi bi-check2 text-success me-1"></i>Empleados asignados vigentes</li>
+                </ul>
+            </div>
+            <div class="card-footer bg-transparent">
+                <a asp-action="EstructuraOrganizacional" class="btn btn-info w-100">
+                    <i class="bi bi-eye me-1"></i> Ver reporte
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>

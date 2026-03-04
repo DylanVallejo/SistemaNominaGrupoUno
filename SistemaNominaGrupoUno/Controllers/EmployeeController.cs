@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SistemaNominaGrupoUno.Context;
@@ -8,10 +9,45 @@ namespace SistemaNominaGrupoUno.Controllers
     /// <summary>
     /// Controlador para la gestión de empleados (ABM: alta, baja, modificación).
     /// RF-02: Crear, editar, consultar y desactivar empleados sin borrado físico.
+    /// RF-10: Búsqueda por texto y filtros en pantalla de consulta.
+    /// RF-11: CI único, correo único y en minúsculas, nombre trimmed, CSRF tokens.
+    /// RF-13: Registro de actividad en operaciones críticas (crear/editar/baja lógica).
+    /// RNF-01: Listados paginados (10 filas por página).
+    /// RNF-03: Documentación XML en controladores y modelos.
+    /// RF-01: Requiere autenticación para acceder.
     /// </summary>
+    [Authorize]
     public class EmployeeController(EmployeeManagementContext context) : Controller
     {
         private const int PageSize = 10;
+
+        // ─────────────────────────────────────────────────────────────
+        // HELPER — Log de actividad
+        // ─────────────────────────────────────────────────────────────
+
+        /// <summary>
+        /// Graba un evento en Log_Actividad para operaciones críticas del módulo.
+        /// RF-13: Registro de actividad — crear/editar/baja lógica de empleados.
+        /// </summary>
+        private async Task RegistrarActividadAsync(string accion, string detalle)
+        {
+            try
+            {
+                context.LogActividad.Add(new LogActividad
+                {
+                    Usuario = User.Identity?.Name ?? "sistema",
+                    Accion  = accion,
+                    Entidad = "Empleados",
+                    Detalle = detalle,
+                    Fecha   = DateTime.Now
+                });
+                await context.SaveChangesAsync();
+            }
+            catch
+            {
+                // No interrumpir el flujo principal si el log falla
+            }
+        }
 
         // ─────────────────────────────────────────────────────────────
         // INDEX — listado paginado con búsqueda y filtro de estado
@@ -124,6 +160,10 @@ namespace SistemaNominaGrupoUno.Controllers
             context.Employees.Add(employee);
             await context.SaveChangesAsync();
 
+            // RF-13: Registrar alta de empleado en log de actividad
+            await RegistrarActividadAsync("Alta",
+                $"Empleado #{employee.EmpNo} — {employee.FirstName} {employee.LastName} (CI: {employee.Ci}) dado de alta.");
+
             TempData["Success"] = $"Empleado {employee.FirstName} {employee.LastName} creado exitosamente (N° {employee.EmpNo}).";
             return RedirectToAction(nameof(Index));
         }
@@ -192,6 +232,10 @@ namespace SistemaNominaGrupoUno.Controllers
 
             await context.SaveChangesAsync();
 
+            // RF-13: Registrar modificación de empleado en log de actividad
+            await RegistrarActividadAsync("Edición",
+                $"Empleado #{employee.EmpNo} — {employee.FirstName} {employee.LastName} modificado.");
+
             TempData["Success"] = $"Empleado {employee.FirstName} {employee.LastName} actualizado exitosamente.";
             return RedirectToAction(nameof(Index));
         }
@@ -213,6 +257,10 @@ namespace SistemaNominaGrupoUno.Controllers
             employee.IsActive = false;
             await context.SaveChangesAsync();
 
+            // RF-13: Registrar baja lógica en log de actividad
+            await RegistrarActividadAsync("Baja lógica",
+                $"Empleado #{employee.EmpNo} — {employee.FirstName} {employee.LastName} dado de baja.");
+
             TempData["Warning"] = $"Empleado {employee.FirstName} {employee.LastName} dado de baja del sistema.";
             return RedirectToAction(nameof(Index));
         }
@@ -229,6 +277,10 @@ namespace SistemaNominaGrupoUno.Controllers
 
             employee.IsActive = true;
             await context.SaveChangesAsync();
+
+            // RF-13: Registrar reactivación en log de actividad
+            await RegistrarActividadAsync("Reactivación",
+                $"Empleado #{employee.EmpNo} — {employee.FirstName} {employee.LastName} reactivado.");
 
             TempData["Success"] = $"Empleado {employee.FirstName} {employee.LastName} reactivado exitosamente.";
             return RedirectToAction(nameof(Index));

@@ -17,6 +17,8 @@ namespace SistemaNominaGrupoUno.Context
         public DbSet<Salaries> Salaries { get; set; }
         public DbSet<Titles> Titles { get; set; }
         public DbSet<LogAuditoriaSalarios> LogAuditoriaSalarios { get; set; }
+        public DbSet<Users> Users { get; set; }
+        public DbSet<LogActividad> LogActividad { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -81,6 +83,8 @@ namespace SistemaNominaGrupoUno.Context
             modelBuilder.Entity<DeptManager>().ToTable("DeptManager");
             modelBuilder.Entity<DeptEmp>().ToTable("DeptEmp");
             modelBuilder.Entity<LogAuditoriaSalarios>().ToTable("Log_AuditoriaSalarios");
+            modelBuilder.Entity<LogActividad>().HasKey(l => l.Id);
+            modelBuilder.Entity<LogActividad>().ToTable("Log_Actividad");
         }
     }
 
